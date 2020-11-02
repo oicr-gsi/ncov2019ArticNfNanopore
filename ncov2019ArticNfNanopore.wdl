@@ -27,6 +27,10 @@ workflow ncov2019ArticNfNanopore {
             {
                 name: "ncov2019-artic-nf-nanopore/20200926",
                 url: "https://github.com/connor-lab/ncov2019-artic-nf"
+            },
+            {
+                name: "artic-ncov2019-primer-schemes/20200908",
+                url: "https://github.com/artic-network/primer-schemes"
             }
         ]
         output_meta: {
