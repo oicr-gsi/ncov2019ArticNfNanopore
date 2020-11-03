@@ -1,6 +1,6 @@
 # ncov2019ArticNfNanopore
 
-This Nextflow pipeline automates the ARTIC network nCoV-2019 novel coronavirus bioinformatics protocol. It will turn SARS-COV2 sequencing data (Illumina or Nanopore) into consensus sequences and provide other helpful outputs to assist the project's sequencing centres with submitting data.
+This Nextflow pipeline automates the ARTIC network nCoV-2019 novel coronavirus bioinformatics protocol. It will turn SARS-COV2 sequencing data (Illumina or Nanopore) into consensus sequences and provide other helpful outputs to assist the project's sequencing centres with submitting data. Pipeline documentation at https://artic.readthedocs.io/en/latest/minion/.
 
 ## Overview
 
@@ -54,15 +54,19 @@ Parameter|Value|Default|Description
 
 Output | Type | Description
 ---|---|---
+`bamRaw`|File|The raw alignment of sample reads to reference genome
+`bamRawIndex`|File|The BAM index for the raw alignments BAM
 `bamPrimerTrimmed`|File|BAM file for visualisation after primer-binding site trimming
 `bamPrimerTrimmedIndex`|File|BAM index file for visualisation after primer-binding site trimming
 `bamTrimmed`|File|BAM file with the primers left on (used in variant calling)
 `bamTrimmedIndex`|File|BAM index file with the primers left on (used in variant calling)
 `fastaConcensus`|File|Consensus sequence
+`fastaMuscle`|File|An alignment of the consensus sequence against the reference sequence
 `qcCsv`|File|QC summary
+`vcfFail`|File|Detected variants in VCF format failing quality filter
 `vcfMerged`|File|All detected variants in VCF format
 `vcfPass`|File|Detected variants in VCF format passing quality filter (gz compressed)
-`vcfPassIndex`|File|Index for passed VCF
+`vcfPrimers`|File|Detected variants falling in primer-binding regions
 `nextflowLogs`|File|All nextflow workflow task stdout and stderr logs gzipped and named by task.
 
 
