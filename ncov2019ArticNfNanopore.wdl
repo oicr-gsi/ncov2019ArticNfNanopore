@@ -46,7 +46,6 @@ workflow ncov2019ArticNfNanopore {
             vcfFail: "Detected variants in VCF format failing quality filter",
             vcfMerged: "All detected variants in VCF format",
             vcfPass: "Detected variants in VCF format passing quality filter (gz compressed)",
-            vcfPassIndex: "Index for passed VCF",
             vcfPrimers: "Detected variants falling in primer-binding regions",
             nextflowLogs: "All nextflow workflow task stdout and stderr logs gzipped and named by task."
         }
@@ -72,9 +71,10 @@ workflow ncov2019ArticNfNanopore {
         File fastaConcensus = runNcov2019ArticNfNanopore.fastaConcensus
         File fastaMuscle = runNcov2019ArticNfNanopore.fastaMuscle
         File qcCsv = runNcov2019ArticNfNanopore.qcCsv
+        File vcfFail = runNcov2019ArticNfNanopore.vcfFail
         File vcfMerged = runNcov2019ArticNfNanopore.vcfMerged
         File vcfPass = runNcov2019ArticNfNanopore.vcfPass
-        File vcfPassIndex = runNcov2019ArticNfNanopore.vcfPassIndex
+        File vcfPrimers = runNcov2019ArticNfNanopore.vcfPrimers
         File nextflowLogs = runNcov2019ArticNfNanopore.nextflowLogs
     }
 }
@@ -139,7 +139,11 @@ task runNcov2019ArticNfNanopore {
         # Move all files into the results folder
         mv results/articNcovNanopore*/* results
 
+        # Small vcf files are sometimes zipped and sometimes not. Unzip all.
+        gunzip -dk results/*.vcf.gz
+
         # extract all logs from the nextflow working directory
+        # Copied from https://github.com/oicr-gsi/ncov2019ArticNf
         NEXTFLOW_ID="$(nextflow log -q | head -1)"
         NEXTFLOW_TASKS=$(nextflow log "${NEXTFLOW_ID}" -f "name,workdir" -s '\t')
         mkdir -p logs
@@ -167,8 +171,7 @@ task runNcov2019ArticNfNanopore {
         File qcCsv = "results/~{prefix}.qc.csv"
         File vcfFail = "results/~{fileName}.fail.vcf"
         File vcfMerged = "results/~{fileName}.merged.vcf"
-        File vcfPass = "results/~{fileName}.pass.vcf.gz"
-        File vcfPassIndex = "results/~{fileName}.pass.vcf.gz.tbi"
+        File vcfPass = "results/~{fileName}.pass.vcf"
         File vcfPrimers = "results/~{fileName}.primers.vcf"
         File nextflowLogs = "~{prefix}.logs.tar.gz"
     }
@@ -187,7 +190,6 @@ task runNcov2019ArticNfNanopore {
             vcfFail: "Detected variants in VCF format failing quality filter",
             vcfMerged: "All detected variants in VCF format",
             vcfPass: "Detected variants in VCF format passing quality filter (gz compressed)",
-            vcfPassIndex: "Index for passed VCF",
             vcfPrimers: "Detected variants falling in primer-binding regions",
             nextflowLogs: "All nextflow workflow task stdout and stderr logs gzipped and named by task."
         }
