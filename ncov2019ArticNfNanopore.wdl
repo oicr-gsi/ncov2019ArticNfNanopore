@@ -21,7 +21,7 @@ workflow ncov2019ArticNfNanopore {
     meta {
         author: "Savo Lazic"
         email: "savo.lazic@oicr.on.ca"
-        description: "This Nextflow pipeline automates the ARTIC network nCoV-2019 novel coronavirus bioinformatics protocol. It will turn SARS-COV2 sequencing data (Illumina or Nanopore) into consensus sequences and provide other helpful outputs to assist the project's sequencing centres with submitting data."
+        description: "This Nextflow pipeline automates the ARTIC network nCoV-2019 novel coronavirus bioinformatics protocol. It will turn SARS-COV2 sequencing data (Illumina or Nanopore) into consensus sequences and provide other helpful outputs to assist the project's sequencing centres with submitting data. Pipeline documentation at https://artic.readthedocs.io/en/latest/minion/."
         dependencies:
         [
             {
@@ -34,11 +34,14 @@ workflow ncov2019ArticNfNanopore {
             }
         ]
         output_meta: {
+            bamRaw: "The raw alignment of sample reads to reference genome",
+            bamRawIndex: "The BAM index for the raw alignments BAM",
             bamPrimerTrimmed: "BAM file for visualisation after primer-binding site trimming",
             bamPrimerTrimmedIndex: "BAM index file for visualisation after primer-binding site trimming",
             bamTrimmed: "BAM file with the primers left on (used in variant calling)",
             bamTrimmedIndex: "BAM index file with the primers left on (used in variant calling)",
             fastaConcensus: "Consensus sequence",
+            fastaMuscle: "An alignment of the consensus sequence against the reference sequence",
             qcCsv: "QC summary",
             vcfFail: "Detected variants in VCF format failing quality filter",
             vcfMerged: "All detected variants in VCF format",
@@ -60,11 +63,14 @@ workflow ncov2019ArticNfNanopore {
     }
 
     output {
+        File bamRaw = runNcov2019ArticNfNanopore.bamRaw
+        File bamRawIndex = runNcov2019ArticNfNanopore.bamRawIndex
         File bamPrimerTrimmed = runNcov2019ArticNfNanopore.bamPrimerTrimmed
         File bamPrimerTrimmedIndex = runNcov2019ArticNfNanopore.bamPrimerTrimmedIndex
         File bamTrimmed = runNcov2019ArticNfNanopore.bamTrimmed
         File bamTrimmedIndex = runNcov2019ArticNfNanopore.bamTrimmedIndex
         File fastaConcensus = runNcov2019ArticNfNanopore.fastaConcensus
+        File fastaMuscle = runNcov2019ArticNfNanopore.fastaMuscle
         File qcCsv = runNcov2019ArticNfNanopore.qcCsv
         File vcfMerged = runNcov2019ArticNfNanopore.vcfMerged
         File vcfPass = runNcov2019ArticNfNanopore.vcfPass
@@ -129,6 +135,10 @@ task runNcov2019ArticNfNanopore {
             ~{schemeDirFlag} ~{schemeNameFlag} ~{schemeVersionFlag} \
             ~{additionalParameters}
 
+        # Folder names change depending on the method arguement.
+        # Move all files into the results folder
+        mv results/articNcovNanopore*/* results
+
         # extract all logs from the nextflow working directory
         NEXTFLOW_ID="$(nextflow log -q | head -1)"
         NEXTFLOW_TASKS=$(nextflow log "${NEXTFLOW_ID}" -f "name,workdir" -s '\t')
@@ -146,27 +156,33 @@ task runNcov2019ArticNfNanopore {
     >>>
 
     output {
-        File bamPrimerTrimmed = "results/articNcovNanopore_sequenceAnalysisNanopolish_articMinIONNanopolish/~{fileName}.primertrimmed.rg.sorted.bam"
-        File bamPrimerTrimmedIndex = "results/articNcovNanopore_sequenceAnalysisNanopolish_articMinIONNanopolish/~{fileName}.primertrimmed.rg.sorted.bam.bai"
-        File bamTrimmed = "results/articNcovNanopore_sequenceAnalysisNanopolish_articMinIONNanopolish/~{fileName}.trimmed.rg.sorted.bam"
-        File bamTrimmedIndex = "results/articNcovNanopore_sequenceAnalysisNanopolish_articMinIONNanopolish/~{fileName}.trimmed.rg.sorted.bam.bai"
-        File fastaConcensus = "results/articNcovNanopore_sequenceAnalysisNanopolish_articMinIONNanopolish/~{fileName}.consensus.fasta"
+        File bamRaw = "results/~{fileName}.sorted.bam"
+        File bamRawIndex = "results/~{fileName}.sorted.bam.bai"
+        File bamPrimerTrimmed = "results/~{fileName}.primertrimmed.rg.sorted.bam"
+        File bamPrimerTrimmedIndex = "results/~{fileName}.primertrimmed.rg.sorted.bam.bai"
+        File bamTrimmed = "results/~{fileName}.trimmed.rg.sorted.bam"
+        File bamTrimmedIndex = "results/~{fileName}.trimmed.rg.sorted.bam.bai"
+        File fastaConcensus = "results/~{fileName}.consensus.fasta"
+        File fastaMuscle = "results/~{fileName}.muscle.out.fasta"
         File qcCsv = "results/~{prefix}.qc.csv"
-        File vcfFail = "results/articNcovNanopore_sequenceAnalysisNanopolish_articMinIONNanopolish/~{fileName}.fail.vcf"
-        File vcfMerged = "results/articNcovNanopore_sequenceAnalysisNanopolish_articMinIONNanopolish/~{fileName}.merged.vcf"
-        File vcfPass = "results/articNcovNanopore_sequenceAnalysisNanopolish_articMinIONNanopolish/~{fileName}.pass.vcf.gz"
-        File vcfPassIndex = "results/articNcovNanopore_sequenceAnalysisNanopolish_articMinIONNanopolish/~{fileName}.pass.vcf.gz.tbi"
-        File vcfPrimers = "results/articNcovNanopore_sequenceAnalysisNanopolish_articMinIONNanopolish/~{fileName}.primers.vcf"
+        File vcfFail = "results/~{fileName}.fail.vcf"
+        File vcfMerged = "results/~{fileName}.merged.vcf"
+        File vcfPass = "results/~{fileName}.pass.vcf.gz"
+        File vcfPassIndex = "results/~{fileName}.pass.vcf.gz.tbi"
+        File vcfPrimers = "results/~{fileName}.primers.vcf"
         File nextflowLogs = "~{prefix}.logs.tar.gz"
     }
 
     meta {
         output_meta: {
+            bamRaw: "The raw alignment of sample reads to reference genome",
+            bamRawIndex: "The BAM index for the raw alignments BAM",
             bamPrimerTrimmed: "BAM file for visualisation after primer-binding site trimming",
             bamPrimerTrimmedIndex: "BAM index file for visualisation after primer-binding site trimming",
             bamTrimmed: "BAM file with the primers left on (used in variant calling)",
             bamTrimmedIndex: "BAM index file with the primers left on (used in variant calling)",
             fastaConcensus: "Consensus sequence",
+            fastaMuscle: "An alignment of the consensus sequence against the reference sequence",
             qcCsv: "QC summary",
             vcfFail: "Detected variants in VCF format failing quality filter",
             vcfMerged: "All detected variants in VCF format",
