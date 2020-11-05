@@ -1,0 +1,40 @@
+{
+  "defaults": {
+    "description": "ncov2019ArticNfNanopore workflow test",
+    "metrics_calculate": "calculate.sh",
+    "metrics_compare": "compare.sh",
+    "output_metrics_dir": "/.mounts/labs/gsi/testdata/ncov2019ArticNfNanopore/output_metrics",
+    "parameters": {
+      "wdl_options": {
+        "write_to_cache": false,
+        "read_from_cache": false
+      }
+    }
+  },
+  "tests": [
+    {
+      "id": "medaka_method_test",
+      "parameters": {
+        "wdl_inputs": {
+          "ncov2019ArticNfNanopore.method": "medaka",
+          "ncov2019ArticNfNanopore.fast5Path": "/.mounts/labs/gsi/testdata/ncov2019ArticNfNanopore/input_data/fast5",
+          "ncov2019ArticNfNanopore.basecalledFastq": "/.mounts/labs/gsi/testdata/ncov2019ArticNfNanopore/input_data/barcode01",
+          "ncov2019ArticNfNanopore.prefix": "test",
+          "ncov2019ArticNfNanopore.sequencingSummary": "/.mounts/labs/gsi/testdata/ncov2019ArticNfNanopore/input_data/sequencing_summary.txt"
+        }
+      }
+    },
+    {
+      "id": "nanopolish_method_test",
+      "parameters": {
+        "wdl_inputs": {
+          "ncov2019ArticNfNanopore.method": "nanopolish",
+          "ncov2019ArticNfNanopore.fast5Path": "/.mounts/labs/gsi/testdata/ncov2019ArticNfNanopore/input_data/fast5",
+          "ncov2019ArticNfNanopore.basecalledFastq": "/.mounts/labs/gsi/testdata/ncov2019ArticNfNanopore/input_data/barcode01",
+          "ncov2019ArticNfNanopore.prefix": "test",
+          "ncov2019ArticNfNanopore.sequencingSummary": "/.mounts/labs/gsi/testdata/ncov2019ArticNfNanopore/input_data/sequencing_summary.txt"
+        }
+      }
+    }
+  ]
+}
