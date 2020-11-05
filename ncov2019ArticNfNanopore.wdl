@@ -102,7 +102,7 @@ task runNcov2019ArticNfNanopore {
     String profileFlag = if defined(profile) then "-profile ~{profile}" else ""
     String schemeDirFlag = if defined(schemeDir) then "--schemeDir ~{schemeDir}" else ""
     String schemeNameFlag = if defined(schemeName) then "--scheme ~{schemeName}" else ""
-    String schemeVersionFlag = if defined(schemeVersion) then "--schemeVersion ~{schemeName}" else ""
+    String schemeVersionFlag = if defined(schemeVersion) then "--schemeVersion ~{schemeVersion}" else ""
 
     parameter_meta {
         profile: "Optional. May be conda,singularity,docker,slurm,lsf."
