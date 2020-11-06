@@ -1,4 +1,9 @@
 #!/bin/bash
+set -o nounset
+set -o errexit
+set -o pipefail
+
+cd $1
 
 # Result files have PREFIX_FOLDERNAME added to all output files
 # This is ignored and file extensions are used to identify the files to calculate
