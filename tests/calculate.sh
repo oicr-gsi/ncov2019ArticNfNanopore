@@ -3,6 +3,9 @@ set -o nounset
 set -o errexit
 set -o pipefail
 
+# Jenkins seems to have different locale, so sort is off. Set it explicitly
+export LC_ALL=en_US.utf8
+
 cd $1
 
 # Result files have PREFIX_FOLDERNAME added to all output files
